@@ -1,0 +1,49 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "Atom One",
+    "hideFooter": true,
+    "showSpinner": true
+  },
+  "mcpServers": {
+    "engram": {
+      "command": "engram",
+      "args": ["mcp"]
+    },
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}",
+        "Accept": "application/json, text/event-stream"
+      }
+    }
+  },
+  "ide": {
+    "enabled": true
+  },
+  "checkpointing": {
+    "enabled": true
+  },
+  "general": {
+    "previewFeatures": true,
+    "enablePromptCompletion": true,
+    "enableNotifications": true,
+    "preferredEditor": "antigravity",
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "30d",
+      "warningAcknowledged": true
+    }
+  },
+  "context": {
+    "fileName": ["AGENTS.md", "GEMINI.md"]
+  },
+  "experimental": {
+    "enableAgents": true
+  },
+  "hasSeenIdeIntegrationNudge": true
+}
