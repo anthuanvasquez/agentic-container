@@ -179,6 +179,7 @@ COPY scripts/setup-pi-config.sh /usr/local/bin/
 COPY scripts/setup-copilot-config.sh /usr/local/bin/
 COPY scripts/setup-gemini-config.sh /usr/local/bin/
 COPY scripts/setup-python.sh /usr/local/bin/
+COPY scripts/setup-skills.sh /usr/local/bin/
 
 COPY --chown=node:node templates/pi-settings.template.json /usr/local/share/pi-defaults/settings.json
 COPY --chown=node:node templates/copilot-settings.template.json /usr/local/share/copilot-defaults/settings.json
@@ -190,16 +191,19 @@ RUN chmod +x /usr/local/bin/setup-firewall.sh && \
     chmod +x /usr/local/bin/setup-copilot-config.sh && \
     chmod +x /usr/local/bin/setup-gemini-config.sh && \
     chmod +x /usr/local/bin/setup-python.sh && \
+    chmod +x /usr/local/bin/setup-skills.sh && \
     echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-firewall.sh" > /etc/sudoers.d/node-firewall && \
     echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-pi-config.sh" > /etc/sudoers.d/node-pi-config && \
     echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-copilot-config.sh" > /etc/sudoers.d/node-copilot-config && \
     echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-gemini-config.sh" > /etc/sudoers.d/node-gemini-config && \
     echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-python.sh" > /etc/sudoers.d/node-python && \
+    echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-skills.sh" > /etc/sudoers.d/node-skills && \
     chmod 0440 /etc/sudoers.d/node-firewall && \
     chmod 0440 /etc/sudoers.d/node-pi-config && \
     chmod 0440 /etc/sudoers.d/node-copilot-config && \
     chmod 0440 /etc/sudoers.d/node-gemini-config && \
-    chmod 0440 /etc/sudoers.d/node-python
+    chmod 0440 /etc/sudoers.d/node-python && \
+    chmod 0440 /etc/sudoers.d/node-skills
 
 # Switch back to node user for runtime
 USER node

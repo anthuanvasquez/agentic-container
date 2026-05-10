@@ -99,7 +99,7 @@
     }
   },
 
-  "postCreateCommand": "npm install -g npm@latest @mariozechner/pi-coding-agent @github/copilot @google/gemini-cli",
+  "postCreateCommand": "npm install -g npm@latest @mariozechner/pi-coding-agent @github/copilot @google/gemini-cli && sudo /usr/local/bin/setup-skills.sh",
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/setup-git-hook.sh",
   "waitFor": "postCreateCommand"
 }
