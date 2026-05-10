@@ -1,0 +1,71 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm/
+.yarn/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Build outputs
+dist/
+build/
+*.out
+*.o
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documentation
+*.md
+!.devcontainer/*.md
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+.nyc_output/
+htmlcov/
+exports/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Claude Code specific (these persist in volumes)
+.claude/
+.codex/
+.gemini/
+
+# CI/CD
+.github/
+.gitlab/
+.circleci/
