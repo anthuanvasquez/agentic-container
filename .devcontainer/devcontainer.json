@@ -7,6 +7,7 @@
     "dockerfile": "Dockerfile",
     "args": {
       "TZ": "${localEnv:TZ:America/Santo_Domingo}",
+      "GENTLEMAN_ENGRAM_VERSION": "1.15.10",
       "GIT_DELTA_VERSION": "0.18.2",
       "ZSH_IN_DOCKER_VERSION": "1.2.1"
     }
@@ -52,7 +53,26 @@
 
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-  "forwardPorts": [3000, 4200, 5173, 8080, 8888],
+  "forwardPorts": [3000, 4200, 5173, 8080],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "API Server",
+      "onAutoForward": "notify"
+    },
+    "4200": {
+      "label": "Angular Dev Server",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Web Server",
+      "onAutoForward": "notify"
+    }
+  },
 
   "runArgs": [
     "--cap-drop=ALL",
@@ -69,10 +89,10 @@
   ],
 
   "mounts": [
-    "source=bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=command-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=pi-config-${devcontainerId},target=/home/node/.pi,type=volume",
     "source=copilot-config-${devcontainerId},target=/home/node/.copilot,type=volume",
     "source=gemini-config-${devcontainerId},target=/home/node/.gemini,type=volume",
-    "source=pi-config-${devcontainerId},target=/home/node/.pi,type=volume",
     "source=ghub-config-${devcontainerId},target=/home/node/.config/gh,type=volume",
     "source=npm-global-${devcontainerId},target=/home/node/.npm-global,type=volume",
     "source=bun-${devcontainerId},target=/home/node/.bun,type=volume",
