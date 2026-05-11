@@ -1,4 +1,7 @@
 {
+  "ide": {
+    "enabled": true
+  },
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
@@ -21,9 +24,6 @@
         "Accept": "application/json, text/event-stream"
       }
     }
-  },
-  "ide": {
-    "enabled": true
   },
   "checkpointing": {
     "enabled": true

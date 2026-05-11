@@ -1,0 +1,10 @@
+{
+  "theme": "tokyo-night",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.3-codex",
+  "packages": [],
+  "defaultThinkingLevel": "medium",
+  "terminal": {
+    "showTerminalProgress": true
+  }
+}
