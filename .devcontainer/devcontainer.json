@@ -27,6 +27,9 @@
     },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "none"
+    },
+    "ghcr.io/anthuanvasquez/skills/skills:0.1.1": {
+      "platforms": "all"
     }
   },
 
@@ -99,7 +102,7 @@
     }
   },
 
-  "postCreateCommand": "npm install -g npm@latest @mariozechner/pi-coding-agent @github/copilot @google/gemini-cli && sudo /usr/local/bin/setup-skills.sh",
+  "postCreateCommand": "npm install -g npm@latest @earendil-works/pi-coding-agent @github/copilot @google/gemini-cli",
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/setup-git-hook.sh",
   "waitFor": "postCreateCommand"
 }
