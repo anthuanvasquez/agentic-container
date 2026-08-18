@@ -122,7 +122,7 @@
     }
   },
 
-  "postCreateCommand": "npm install -g npm@latest @earendil-works/pi-coding-agent @github/copilot @google/gemini-cli",
+  "postCreateCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh",
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/setup-git-hook.sh",
   "waitFor": "postCreateCommand"
 }
