@@ -1,66 +1,49 @@
-# AI Devcontainer
+# Agentic Container
 
-Devcontainer para trabajar con agentes de IA en un entorno consistente, con herramientas preconfiguradas y bootstrap automatizado.
+Imagen de devcontainer reutilizable para ejecutar **GitHub Copilot CLI** de forma segura y consistente en cualquier proyecto.
+
+## Uso en otro repositorio
+
+Añade `.devcontainer/devcontainer.json` en el proyecto objetivo:
+
+```json
+{
+  "name": "Agentic Container",
+  "image": "ghcr.io/anthuanvasquez/agentic-container:latest",
+  "remoteUser": "node",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "bash /usr/local/bin/health-check.sh",
+  "postStartCommand": "bash /usr/local/bin/setup-git-hook.sh"
+}
+```
+
+El proyecto se monta automáticamente en `/workspaces/<nombre-del-repo>`, y Copilot CLI corre dentro del mismo entorno con todas las herramientas necesarias.
+
+## Autenticación
+
+Ejecuta dentro del contenedor:
+
+```bash
+gh auth login
+copilot auth login
+```
+
+## Publicación
+
+La imagen se publica automáticamente en GHCR desde este repositorio:
+
+- `ghcr.io/anthuanvasquez/agentic-container:latest`
+- `ghcr.io/anthuanvasquez/agentic-container:<semver>`
+- `ghcr.io/anthuanvasquez/agentic-container:<sha>`
+
+## Desarrollo local
+
+Abre este repositorio en VS Code con Dev Containers. El `devcontainer.json` local construye la imagen desde el Dockerfile.
 
 ## Incluye
 
-- VS Code Dev Containers con usuario `node`.
-- Feature de skills globales:
-	- `ghcr.io/anthuanvasquez/skills/skills:0.1.1`
-	- `platforms: all`
-- CLIs instaladas en `postCreate`:
-	- `@earendil-works/pi-coding-agent`
-	- `@github/copilot`
-	- `@google/gemini-cli`
-- Inicializacion de hook de Git en `postStart` para proteger commits directos a `main/master`.
-
-## Flujo de bootstrap
-
-1. Build del contenedor y activacion de Features (incluyendo skills).
-2. `postCreateCommand` ejecuta `.devcontainer/scripts/post-create.sh`.
-3. `post-create.sh`:
-	 - instala CLIs globales,
-	 - ejecuta `.devcontainer/scripts/health-check.sh`,
-	 - guarda log en `~/.agents/logs/post-create.log`.
-4. `postStartCommand` ejecuta `.devcontainer/scripts/setup-git-hook.sh`.
-
-## Health Check
-
-Script central de verificacion: `.devcontainer/scripts/health-check.sh`.
-
-Valida:
-
-- Comandos disponibles: `npm`, `pi`, `copilot`, `gemini`.
-- Directorios esperados: `~/.pi`, `~/.copilot`, `~/.gemini`, `~/.agents/skills`.
-
-Salida de estado:
-
-- `~/.agents/bootstrap-health.status`
-
-## Comandos utiles
-
-Re-ejecutar bootstrap post-create:
-
-```bash
-bash .devcontainer/scripts/post-create.sh
-```
-
-Ejecutar health check manual:
-
-```bash
-bash .devcontainer/scripts/health-check.sh
-```
-
-Reinstalar hook de Git:
-
-```bash
-bash .devcontainer/scripts/setup-git-hook.sh
-```
-
-## Estructura relevante
-
-- `.devcontainer/devcontainer.json`: orquestacion del entorno.
-- `.devcontainer/scripts/post-create.sh`: bootstrap resilient para `postCreate`.
-- `.devcontainer/scripts/health-check.sh`: validacion centralizada del setup.
-- `.devcontainer/scripts/setup-git-hook.sh`: proteccion de ramas en commit.
-- `.devcontainer/templates/`: plantillas de configuracion para agentes.
+- Node.js 22
+- GitHub CLI (`gh`)
+- GitHub Copilot CLI (`copilot`)
+- `npm`, `python3`, `jq`, `yq`, `fzf`, `ripgrep`, `fd-find`
+- Protección de ramas `main`/`master` vía hook de Git

@@ -1,60 +1,16 @@
 {
-  "name": "Agentic Container - ${localWorkspaceFolderBasename}",
-
-  "init": true,
-
+  "name": "Agentic Container",
   "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "TZ": "${localEnv:TZ:America/Santo_Domingo}",
-      "GENTLEMAN_ENGRAM_VERSION": "1.15.10",
-      "GIT_DELTA_VERSION": "0.18.2",
-      "ZSH_IN_DOCKER_VERSION": "1.2.1"
-    }
+    "dockerfile": "Dockerfile"
   },
-
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": false,
-      "installOhMyZsh": false,
-      "upgradePackages": false,
-      "username": "vscode",
-      "userUid": "automatic",
-      "userGid": "automatic"
-    },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": false
-    },
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "none"
-    },
-    "ghcr.io/anthuanvasquez/skills/skills:0.1.1": {
-      "platforms": "all"
-    }
-  },
-
-  // "hostRequirements": {
-  //   "cpus": 4,
-  //   "memory": "6gb",
-  //   "storage": "32gb"
-  // },
-
   "remoteUser": "node",
-
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
-    "PI_CONFIG_DIR": "/home/node/.pi",
     "COPILOT_CONFIG_DIR": "/home/node/.copilot",
-    "GEMINI_CONFIG_DIR": "/home/node/.gemini",
-    "NPM_CONFIG_PREFIX": "/home/node/.npm-global",
-    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+    "NPM_CONFIG_PREFIX": "/home/node/.npm-global"
   },
-
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-
   "forwardPorts": [3000, 4200, 5173, 8080],
-
   "portsAttributes": {
     "3000": {
       "label": "API Server",
@@ -73,56 +29,25 @@
       "onAutoForward": "notify"
     }
   },
-
-  "runArgs": [
-    "--cap-drop=ALL",
-    "--cap-add=NET_ADMIN",
-    "--cap-add=NET_RAW",
-    "--cap-add=SETUID",
-    "--cap-add=SETGID",
-    "--cap-add=SYS_ADMIN",
-    "--sysctl=net.ipv6.conf.all.disable_ipv6=1",
-    "--sysctl=net.ipv6.conf.default.disable_ipv6=1",
-    "--sysctl=net.ipv6.conf.lo.disable_ipv6=1",
-    "--add-host=host.docker.internal:host-gateway",
-    "--env-file=${localWorkspaceFolder}/.env"
-  ],
-
   "mounts": [
     "source=command-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
-    "source=pi-config-${devcontainerId},target=/home/node/.pi,type=volume",
     "source=copilot-config-${devcontainerId},target=/home/node/.copilot,type=volume",
-    "source=gemini-config-${devcontainerId},target=/home/node/.gemini,type=volume",
-    "source=ghub-config-${devcontainerId},target=/home/node/.config/gh,type=volume",
-    "source=npm-global-${devcontainerId},target=/home/node/.npm-global,type=volume",
-    "source=bun-${devcontainerId},target=/home/node/.bun,type=volume",
-    "source=local-bin-${devcontainerId},target=/home/node/.local,type=volume"
+    "source=gh-config-${devcontainerId},target=/home/node/.config/gh,type=volume",
+    "source=npm-global-${devcontainerId},target=/home/node/.npm-global,type=volume"
   ],
-
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode-remote.remote-containers",
         "github.copilot",
         "github.copilot-chat",
         "eamodio.gitlens"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "zsh",
-        "terminal.integrated.profiles.linux": {
-          "bash": {
-            "path": "bash",
-            "icon": "terminal-bash"
-          },
-          "zsh": {
-            "path": "zsh"
-          }
-        }
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
-
-  "postCreateCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh",
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/setup-git-hook.sh",
+  "postCreateCommand": "bash /usr/local/bin/health-check.sh",
+  "postStartCommand": "bash /usr/local/bin/setup-git-hook.sh",
   "waitFor": "postCreateCommand"
 }

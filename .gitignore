@@ -3,17 +3,10 @@
 .env.*
 !.env.example
 
-# Claude Code sensitive configuration
-.claude/settings.local.json
-.claude/hooks/unified_notifier.py
-
-# API keys and credentials (double check these never get committed!)
+# API keys and credentials
 *.key
 *.pem
 credentials.json
-
-# error logs
-error_logs/
 
 # Node.js
 node_modules/
@@ -35,7 +28,6 @@ env/
 *.egg
 *.egg-info/
 .pytest_cache/
-.tox/
 
 # Build outputs
 dist/
@@ -66,16 +58,10 @@ desktop.ini
 # Logs
 *.log
 logs/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Test coverage
 coverage/
 .nyc_output/
-htmlcov/
-.coverage
-*.cover
 
 # Temporary files
 tmp/
@@ -83,23 +69,5 @@ temp/
 *.tmp
 *.bak
 
-# Exports (if contains sensitive data)
-exports/*.json
-exports/*.csv
-!exports/.gitkeep
-
-# Docker volumes (shouldn't be in repo anyway)
+# Docker volumes
 .volumes/
-
-# macOS
-.AppleDouble
-.LSOverride
-Icon
-._*
-
-# JetBrains
-*.iml
-.idea/
-
-# Windows
-$RECYCLE.BIN/

@@ -1,23 +1,18 @@
-# Node.js
+# Dependencies
 node_modules/
-npm-debug.log
-yarn-error.log
 .npm/
 .yarn/
 
 # Python
 __pycache__/
-*.py[cod]
 .venv/
 venv/
 *.egg-info/
-.pytest_cache/
 
 # Build outputs
 dist/
 build/
 *.out
-*.o
 
 # Version control
 .git/
@@ -34,11 +29,9 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
-desktop.ini
 
 # Documentation
 *.md
-!.devcontainer/*.md
 
 # Environment and secrets
 .env
@@ -49,25 +42,5 @@ desktop.ini
 *.log
 logs/
 
-# Test coverage
-coverage/
-.nyc_output/
-htmlcov/
-exports/
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# Claude Code specific (these persist in volumes)
-.claude/
-.codex/
-.copilot/
-.pi/
-.gemini/
-
 # CI/CD
 .github/
-.gitlab/
-.circleci/
