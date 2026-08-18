@@ -20,8 +20,28 @@ check_command() {
 
 echo "Checking required CLIs..."
 check_command npm
+check_command pnpm
 check_command gh
 check_command copilot
+
+# Optional firewall verification
+if [[ "${FIREWALL_ENABLED:-false}" == "true" ]]; then
+    echo ""
+    echo "Verifying firewall..."
+    if curl -fsSL --connect-timeout 5 https://api.github.com/zen >/dev/null 2>&1; then
+        echo "✅ GitHub API reachable through firewall"
+    else
+        echo "❌ GitHub API unreachable through firewall"
+        failures=$((failures + 1))
+    fi
+
+    if curl -fsSL --connect-timeout 5 https://example.com >/dev/null 2>&1; then
+        echo "❌ example.com should be blocked by firewall"
+        failures=$((failures + 1))
+    else
+        echo "✅ example.com blocked by firewall"
+    fi
+fi
 
 echo ""
 if [ "$failures" -eq 0 ]; then

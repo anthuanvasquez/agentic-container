@@ -38,6 +38,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     net-tools \
     iputils-ping \
     netcat-openbsd \
+    iptables \
+    ipset \
+    iproute2 \
+    aggregate \
     locales \
     build-essential \
     python3 \
@@ -67,30 +71,45 @@ RUN groupadd --gid $USER_GID $USERNAME 2>/dev/null || true \
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=/home/node/.npm-global/bin:$PATH
 ENV COPILOT_CONFIG_DIR=/home/node/.copilot
+ENV PNPM_HOME=/home/node/.local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
 
-RUN mkdir -p /home/node/.copilot /home/node/.npm-global/lib /home/node/.config/gh /home/node/.local/bin /commandhistory \
+RUN mkdir -p /home/node/.copilot /home/node/.npm-global/lib /home/node/.config/gh /home/node/.local/bin /home/node/.local/share/pnpm /commandhistory \
     && chown -R node:node /home/node \
     && chown node:node /commandhistory
 
-# Switch to node user before installing global packages
+# Copy bootstrap scripts (must be available before switching to node)
+COPY --chown=node:node scripts/health-check.sh /usr/local/bin/health-check.sh
+COPY --chown=node:node scripts/setup-git-hook.sh /usr/local/bin/setup-git-hook.sh
+COPY --chown=node:node scripts/setup-firewall.sh /usr/local/bin/setup-firewall.sh
+COPY --chown=node:node scripts/configure-npm-security.sh /usr/local/bin/configure-npm-security.sh
+RUN chmod +x /usr/local/bin/health-check.sh /usr/local/bin/setup-git-hook.sh /usr/local/bin/setup-firewall.sh /usr/local/bin/configure-npm-security.sh
+
+# Switch to node user before installing global packages and configuring security
 USER node
+
+# Harden npm/pnpm defaults
+RUN bash /usr/local/bin/configure-npm-security.sh
+
+# Install pnpm directly to avoid corepack runtime version resolution
+ARG PNPM_VERSION=10.6.3
+RUN npm install -g pnpm${PNPM_VERSION:+@$PNPM_VERSION}
 
 # Install GitHub Copilot CLI
 ARG COPILOT_CLI_VERSION=1.0.80
 RUN npm install -g @github/copilot${COPILOT_CLI_VERSION:+@$COPILOT_CLI_VERSION} \
     && npm cache clean --force
 
-# Switch back to root to install scripts system-wide
+# Switch back to root for final system setup
 USER root
 
-# Copy bootstrap scripts
-COPY --chown=node:node scripts/health-check.sh /usr/local/bin/health-check.sh
-COPY --chown=node:node scripts/setup-git-hook.sh /usr/local/bin/setup-git-hook.sh
-RUN chmod +x /usr/local/bin/health-check.sh /usr/local/bin/setup-git-hook.sh
+# Allow node user to configure the firewall without a password and preserve env vars
+RUN printf 'Defaults env_keep += "FIREWALL_ENABLED"\nnode ALL=(root) NOPASSWD:SETENV: /usr/local/bin/setup-firewall.sh\n' > /etc/sudoers.d/node-firewall \
+    && chmod 0440 /etc/sudoers.d/node-firewall
 
 # Shell configuration
-RUN echo 'export PATH=/home/node/.npm-global/bin:/home/node/.local/bin:$PATH' >> /home/node/.bashrc \
-    && echo 'export PATH=/home/node/.npm-global/bin:/home/node/.local/bin:$PATH' >> /home/node/.zshrc \
+RUN echo 'export PATH=/home/node/.npm-global/bin:/home/node/.local/share/pnpm:/home/node/.local/bin:$PATH' >> /home/node/.bashrc \
+    && echo 'export PATH=/home/node/.npm-global/bin:/home/node/.local/share/pnpm:/home/node/.local/bin:$PATH' >> /home/node/.zshrc \
     && echo 'export PROMPT_COMMAND="history -a"' >> /home/node/.bashrc \
     && echo 'export HISTFILE=/commandhistory/.bash_history' >> /home/node/.bashrc \
     && echo 'export HISTFILE=/commandhistory/.zsh_history' >> /home/node/.zshrc \
@@ -102,6 +121,9 @@ ENV DEVCONTAINER=true
 ENV SHELL=/bin/bash
 ENV EDITOR=nano
 ENV VISUAL=nano
+# Make pnpm available to all shells
+ENV PNPM_HOME=/home/node/.local/share/pnpm
+ENV PATH=/home/node/.npm-global/bin:/home/node/.local/share/pnpm:/home/node/.local/bin:$PATH
 
 USER node
 WORKDIR /workspaces

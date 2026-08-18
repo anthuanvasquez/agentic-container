@@ -8,8 +8,14 @@
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "COPILOT_CONFIG_DIR": "/home/node/.copilot",
-    "NPM_CONFIG_PREFIX": "/home/node/.npm-global"
+    "NPM_CONFIG_PREFIX": "/home/node/.npm-global",
+    "PNPM_HOME": "/home/node/.local/share/pnpm",
+    "FIREWALL_ENABLED": "false"
   },
+  "runArgs": [
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW"
+  ],
   "forwardPorts": [3000, 4200, 5173, 8080],
   "portsAttributes": {
     "3000": {
@@ -47,7 +53,7 @@
       }
     }
   },
-  "postCreateCommand": "bash /usr/local/bin/health-check.sh",
+  "postCreateCommand": "sudo -E /usr/local/bin/setup-firewall.sh && bash /usr/local/bin/health-check.sh",
   "postStartCommand": "bash /usr/local/bin/setup-git-hook.sh",
   "waitFor": "postCreateCommand"
 }

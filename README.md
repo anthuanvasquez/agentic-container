@@ -45,5 +45,47 @@ Abre este repositorio en VS Code con Dev Containers. El `devcontainer.json` loca
 - Node.js 22
 - GitHub CLI (`gh`)
 - GitHub Copilot CLI (`copilot`)
-- `npm`, `python3`, `jq`, `yq`, `fzf`, `ripgrep`, `fd-find`
+- `npm`, `pnpm`, `python3`, `jq`, `yq`, `fzf`, `ripgrep`, `fd-find`
+- Configuración endurecida de `npm`/`pnpm` contra ataques a la cadena de suministro
+- Firewall de salida opcional (GitHub + registries comunes)
 - Protección de ramas `main`/`master` vía hook de Git
+
+## Seguridad de paquetes
+
+La imagen configura `.npmrc` y `.pnpmrc` con valores conservadores:
+
+- `ignore-scripts=true`: no ejecuta scripts de lifecycle automáticamente.
+- `save-exact=true`: versiones fijas por defecto.
+- Registro oficial de npm por defecto.
+- `maxsockets=1`: menos conexiones concurrentes a registries.
+
+Si un proyecto necesita ejecutar scripts de postinstall, hazlo explícito:
+
+```bash
+npm install
+npm run postinstall   # o el script que corresponda
+```
+
+## Firewall opcional
+
+Añade al `.devcontainer.json` del proyecto consumidor:
+
+```json
+{
+  "containerEnv": {
+    "FIREWALL_ENABLED": "true"
+  },
+  "runArgs": [
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW"
+  ]
+}
+```
+
+Cuando está activo, solo se permite tráfico a:
+
+- Infraestructura de GitHub (rangos IP oficiales + dominios)
+- Registries: npm, GitHub Packages, PyPI, crates.io, Docker Hub, bun, uv/poetry
+- DNS y redes Docker locales
+
+Todo lo demás se bloquea por defecto.
