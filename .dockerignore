@@ -63,6 +63,8 @@ temp/
 # Claude Code specific (these persist in volumes)
 .claude/
 .codex/
+.copilot/
+.pi/
 .gemini/
 
 # CI/CD
